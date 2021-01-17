@@ -296,7 +296,6 @@ void setup()
   {
     delay(500);
   }
-  ArduinoOTA.setHostname(otaHostname);
   ArduinoOTA.begin();
 
   if (!SPIFFS.begin(true))
