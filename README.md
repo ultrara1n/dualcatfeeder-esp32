@@ -1,5 +1,6 @@
 # dualcatfeeder-esp32
 This is the microcontroller implementation part of the DualCatFeeder project. The code is developed using VS Code with the PlatformIO extension so my urgent advice is to use this constellation if you are planning to build and use the software by yourself.
+Here you will only find software and wiring related information, the more important stuff you can find in the [main repository](https://github.com/ultrara1n/DualCatFeeder) 
 ## Prepare your IDE
 ## Flash your ESP32
 It is necessary to do two separate flash processes to get all the data to your microcontroller. On the one hand you will have to flash the general C++ code and on the other hand some webserver related stuff to the flash memory of your ESP32. But don't worry, at the end there are only two different buttons to press.
@@ -7,7 +8,6 @@ It is necessary to do two separate flash processes to get all the data to your m
 ![Upload code](https://github.com/ultrara1n/dualcatfeeder-esp32/raw/master/assets/uploadcode.png "Upload Code")
 ### Webserver data
 ![Upload flash](https://github.com/ultrara1n/dualcatfeeder-esp32/raw/master/assets/uploadflash.png "Upload flash")
-## BOM
 ## Wiring
 
 # Third-party resources
