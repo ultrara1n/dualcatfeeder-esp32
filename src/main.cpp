@@ -7,6 +7,7 @@
 #include <Preferences.h>
 #include <NTPClient.h>
 #include <WiFiUdp.h>
+#include <functions.h>
 
 AsyncWebServer webServer(80);
 AsyncWebSocket webSocketServer("/ws");
@@ -63,14 +64,14 @@ StaticJsonDocument<384> initialInfoMessage()
 
   JsonObject data_attributes = data.createNestedObject("attributes");
   data_attributes["boottime"] = BOOT_TIME;
-  data_attributes["rebootreason"] = "Hi";
-  data_attributes["rebootreasontext"] = "Text";
+  data_attributes["rebootreasoncpu0"] = getResetReason(rtc_get_reset_reason(0));
+  data_attributes["rebootreasoncpu1"] = getResetReason(rtc_get_reset_reason(1));
   data_attributes["rebootsource"] = "Source";
   data_attributes["freeheap"] = esp_get_free_heap_size();
-  data_attributes["rightlastfeedtime"] = "";
-  data_attributes["rightlastfeedduration"] = "";
-  data_attributes["leftlastfeedtime"] = "";
-  data_attributes["leftlastfeedduration"] = "";
+  data_attributes["rightlastfeedtime"] = preferences.getInt("lastTimeRight");
+  data_attributes["rightlastfeedduration"] = preferences.getInt("lastSecsRight");
+  data_attributes["leftlastfeedtime"] = preferences.getInt("lastTimeLeft");
+  data_attributes["leftlastfeedduration"] = preferences.getInt("lastSecsLeft");
 
   JsonObject data_attributes_timer1 = data_attributes.createNestedObject("timer1");
   data_attributes_timer1["active"] = preferences.getBool("timerActive");
@@ -113,53 +114,57 @@ void stopMotor(int motor)
   digitalWrite(WHITE_LED, LOW);
 }
 
-void motorForwards(int motor, int seconds)
+void rightMotorForwards(int seconds)
 {
-  if (motor == RIGHT_MOTOR)
+  digitalWrite(RED_LED, HIGH);
+
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, HIGH);
+
+  if (seconds > 0)
   {
-    digitalWrite(RED_LED, HIGH);
-
-    digitalWrite(IN1, LOW);
-    digitalWrite(IN2, HIGH);
-
-    if (seconds > 0)
-    {
-      STOP_AFTER_MILLIS_RIGHT = millis();
-      STOP_AFTER_RIGHT = seconds;
-    }
-    else
-    {
-      STOP_AFTER_RIGHT = 0;
-    }
+    STOP_AFTER_MILLIS_RIGHT = millis();
+    STOP_AFTER_RIGHT = seconds;
   }
-  else if (motor == LEFT_MOTOR)
+  else
   {
-    digitalWrite(BLUE_LED, HIGH);
-
-    digitalWrite(IN3, LOW);
-    digitalWrite(IN4, HIGH);
-
-    if (seconds > 0)
-    {
-      STOP_AFTER_MILLIS_LEFT = millis();
-      STOP_AFTER_LEFT = seconds;
-    }
-    else
-    {
-      STOP_AFTER_LEFT = 0;
-    }
+    STOP_AFTER_RIGHT = 0;
   }
+
+  preferences.putInt("lastTimeRight", timeClient.getEpochTime());
+  preferences.putInt("lastSecsRight", seconds);
+}
+
+void leftMotorForwards(int seconds)
+{
+  digitalWrite(BLUE_LED, HIGH);
+
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, HIGH);
+
+  if (seconds > 0)
+  {
+    STOP_AFTER_MILLIS_LEFT = millis();
+    STOP_AFTER_LEFT = seconds;
+  }
+  else
+  {
+    STOP_AFTER_LEFT = 0;
+  }
+
+  preferences.putInt("lastTimeLeft", timeClient.getEpochTime());
+  preferences.putInt("lastSecsLeft", seconds);
 }
 
 void startMotor(int motor, int seconds)
 {
   if (motor == 1 or motor == 3)
   {
-    motorForwards(LEFT_MOTOR, seconds);
+    leftMotorForwards(seconds);
   }
   if (motor == 2 or motor == 3)
   {
-    motorForwards(RIGHT_MOTOR, seconds);
+    rightMotorForwards(seconds);
   }
 }
 
@@ -290,6 +295,7 @@ void checkMotorStopTimer()
 
 void setup()
 {
+  WiFi.mode(WIFI_STA);
   WiFi.begin(wifiSSID, wifiPassword);
 
   while (WiFi.status() != WL_CONNECTED)
