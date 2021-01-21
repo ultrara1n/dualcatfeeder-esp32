@@ -1,5 +1,6 @@
 # dualcatfeeder-esp32
 This is the microcontroller implementation part of the DualCatFeeder project. The code is developed using VS Code with the PlatformIO extension so my urgent advice is to use this constellation if you are planning to build and use the software by yourself.
+
 Here you will only find software and wiring related information, the more important stuff you can find in the [main repository](https://github.com/ultrara1n/DualCatFeeder) 
 ## Prepare your IDE
 ## Flash your ESP32
@@ -10,6 +11,12 @@ It is necessary to do two separate flash processes to get all the data to your m
 ![Upload flash](https://github.com/ultrara1n/dualcatfeeder-esp32/raw/master/assets/uploadflash.png "Upload flash")
 ## Wiring
 
+## WebSocket API
+The ESP32 is providing a WebSocket API which is called with JSON input to control and receive data from the device.
+
+## Updating
+
+
 # Third-party resources
 - App icon by [Freepik](https://www.freepik.com/) from [Flaticon](https://www.flaticon.com)
-- [ESP Async WebServer from me-no-dev](https://github.com/me-no-dev/ESPAsyncWebServer)s
+- [ESP Async WebServer from me-no-dev](https://github.com/me-no-dev/ESPAsyncWebServer)

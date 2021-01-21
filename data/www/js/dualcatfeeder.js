@@ -20,7 +20,7 @@ class webSocketTimerObject {
 }
 
 var connection = new WebSocket('ws://' + location.hostname + '/ws');
-// var connection = new WebSocket('ws://192.168.178.72/ws');
+// var connection = new WebSocket('ws://192.168.178.39/ws');
 connection.onopen = function () {
   //connection.send('Connect ' + new Date());
 
@@ -147,14 +147,17 @@ function timerOnConnect(jsonDataTimer) {
 
 function statsOnConnect(jsonDataAttributes) {
   var dateBootTime = new Date(jsonDataAttributes.boottime * 1000);
-  //var dateLastFeedTime = new Date(jsonObj.lastfeedtime * 1000);
+  var dateLastFeedTimeRight = new Date(jsonDataAttributes.rightlastfeedtime * 1000);
+  var dateLastFeedTimeLeft = new Date(jsonDataAttributes.leftlastfeedtime * 1000);
 
   document.getElementById("bootTime").value = dateBootTime.toLocaleString();
-  //document.getElementById("rebootReason").value = jsonObj.rebootreasontext;
-  //document.getElementById("rebootSource").value = jsonObj.rebootsource;
+  document.getElementById("rebootReasonCpu0").value = jsonDataAttributes.rebootreasoncpu0;
+  document.getElementById("rebootReasonCpu1").value = jsonDataAttributes.rebootreasoncpu1;
   document.getElementById("freeHeap").value = jsonDataAttributes.freeheap;
-  //document.getElementById("lastFeedDuration").value = jsonObj.lastfeedduration / 1000;
-  //document.getElementById("lastFeedTime").value = dateToUTCString(dateLastFeedTime);
+  document.getElementById("rightLastFeedDuration").value = jsonDataAttributes.rightlastfeedduration / 1000;
+  document.getElementById("rightLastFeedTime").value = dateLastFeedTimeRight.toLocaleString();
+  document.getElementById("leftLastFeedDuration").value = jsonDataAttributes.leftlastfeedduration / 1000;
+  document.getElementById("leftLastFeedTime").value = dateLastFeedTimeLeft.toLocaleString();
 
   var dateNow = new Date();
   document.getElementById("lastUpdate").innerText = dateNow.toLocaleString();
