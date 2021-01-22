@@ -3,6 +3,8 @@ This is the microcontroller implementation part of the DualCatFeeder project. Th
 
 Here you will only find software and wiring related information, the more important stuff you can find in the [main repository](https://github.com/ultrara1n/DualCatFeeder) 
 ## Prepare your IDE
+Clone the repository to a place of your choice and open the project in VS Code. You will need the Platformio extension to do all further steps.
+I'm using Arduino OTA to flash updates of code and website to the ESP32, but for your initial flash you will have to connect the device via USB and do a "old fashioned" flash process.
 ## Flash your ESP32
 It is necessary to do two separate flash processes to get all the data to your microcontroller. On the one hand you will have to flash the general C++ code and on the other hand some webserver related stuff to the flash memory of your ESP32. But don't worry, at the end there are only two different buttons to press.
 ### Code
