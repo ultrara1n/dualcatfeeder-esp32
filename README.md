@@ -14,6 +14,90 @@ It is necessary to do two separate flash processes to get all the data to your m
 ## WebSocket API
 The ESP32 is providing a WebSocket API which is called with JSON input to control and receive data from the device.
 
+### Set Timer
+```json
+{
+    "data": {
+        "type": "timer",
+        "id": "1",
+        "attributes": {
+            "active": true,
+            "timestamp": 18900,
+            "seconds": 30
+        }
+    }
+}
+```
+
+### On connect to websocket
+```json
+{
+    "data": {
+        "type": "initial",
+        "attributes": {
+            "boottime": 1611267046,
+            "rebootreasoncpu0": "SW_CPU_RESET",
+            "rebootreasoncpu1": "SW_CPU_RESET",
+            "rssi": -55,
+            "freeheap": 164124,
+            "rightlastfeedtime": 1611325170,
+            "rightlastfeedduration": 15000,
+            "leftlastfeedtime": 1611292500,
+            "leftlastfeedduration": 30000,
+            "timer1": {
+                "active": true,
+                "timestamp": 18900,
+                "seconds": 30
+            }
+        }
+    }
+}
+```
+
+### Start motor
+motor can be *left*, *right* or *both*
+```json
+{
+    "data": {
+        "type": "startMotor",
+        "attributes": {
+            "motor": "right",
+            "seconds": 20,
+        }
+    }
+}
+```
+
+### Stop all motors
+```json
+{
+    "data": {
+        "type": "stopMotor"
+    }
+}
+```
+
+### System operations
+```json
+{
+    "data": {
+        "type": "reboot"
+    }
+}
+```
+
+### Feedback when performing operations
+```json
+{
+    "data": {
+        "type": "response",
+        "attributes": {
+            "message": "right"
+        }
+    }
+}
+```
+
 ## Updating
 
 
