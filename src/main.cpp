@@ -45,6 +45,8 @@ long STOP_AFTER_MILLIS_LEFT;
 
 bool TIMER_MINUTE_ACTIVE = false;
 
+char actionResponse[100];
+
 void notFound(AsyncWebServerRequest *request)
 {
   request->send(404, "text/plain", "Not found");
@@ -66,7 +68,7 @@ StaticJsonDocument<384> initialInfoMessage()
   data_attributes["boottime"] = BOOT_TIME;
   data_attributes["rebootreasoncpu0"] = getResetReason(rtc_get_reset_reason(0));
   data_attributes["rebootreasoncpu1"] = getResetReason(rtc_get_reset_reason(1));
-  data_attributes["rebootsource"] = "Source";
+  data_attributes["rssi"] = WiFi.RSSI();
   data_attributes["freeheap"] = esp_get_free_heap_size();
   data_attributes["rightlastfeedtime"] = preferences.getInt("lastTimeRight");
   data_attributes["rightlastfeedduration"] = preferences.getInt("lastSecsRight");
@@ -168,6 +170,17 @@ void startMotor(int motor, int seconds)
   }
 }
 
+StaticJsonDocument<96> prepareJsonAnswer(const char *message)
+{
+  StaticJsonDocument<96> doc;
+
+  JsonObject data = doc.createNestedObject("data");
+  data["type"] = "response";
+  data["attributes"]["message"] = message;
+
+  return doc;
+}
+
 void processWebsocketData(uint8_t *jsonData, AsyncWebSocketClient *client)
 {
   StaticJsonDocument<128> doc;
@@ -188,7 +201,8 @@ void processWebsocketData(uint8_t *jsonData, AsyncWebSocketClient *client)
 
     saveTimer(data_attributes_active, data_attributes_timestamp, data_attributes_seconds);
 
-    client->text("angekommen");
+    serializeJson(prepareJsonAnswer("Timer saved"), actionResponse);
+    client->text(actionResponse);
   }
   else if (strcmp(data_type, "startMotor") == 0)
   {
@@ -204,7 +218,9 @@ void processWebsocketData(uint8_t *jsonData, AsyncWebSocketClient *client)
   }
   else if (strcmp(data_type, "reboot") == 0)
   {
-    client->text("reboot");
+    serializeJson(prepareJsonAnswer("Rebooting"), actionResponse);
+    client->text(actionResponse);
+
     rebootESP();
   }
 }

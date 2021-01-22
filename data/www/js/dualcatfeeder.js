@@ -19,17 +19,22 @@ class webSocketTimerObject {
   }
 }
 
-var connection = new WebSocket('ws://' + location.hostname + '/ws');
-// var connection = new WebSocket('ws://192.168.178.39/ws');
-connection.onopen = function () {
-  //connection.send('Connect ' + new Date());
+function webSocketConnect(){
+  // return new WebSocket('ws://192.168.178.39/ws');
+  // return new WebSocket('ws://192.168.178.72/ws ');
+  return new WebSocket('ws://' + location.hostname + '/ws');
+}
 
+var connection = webSocketConnect();
+
+connection.onopen = function () {
   var iconElement = document.getElementById("connectionIcon");
   iconElement.classList.remove("filter-orange");
   iconElement.classList.remove("filter-red");
   iconElement.classList.add("filter-green");
 
   //activateAutoUpdate();
+  toast("Connected");
 };
 connection.onerror = function (error) {
   console.log('WebSocket Error ', error);
@@ -45,35 +50,23 @@ connection.onmessage = function (e) {
   if (jsonData.type == "initial") {
     timerOnConnect(jsonData.attributes.timer1);
     statsOnConnect(jsonData.attributes);
-  } else if (jsonData.type == "answer") {
-    processAnswer(jsonData);
+  } else if (jsonData.type == "response") {
+    toast(jsonData.attributes.message);
   }
 };
 connection.onclose = function () {
-  console.log('WebSocket connection closed');
-
   var iconElement = document.getElementById("connectionIcon");
   iconElement.classList.remove("filter-orange");
   iconElement.classList.remove("filter-green");
   iconElement.classList.add("filter-red");
+
+  toast('Connection lost')
 };
 
 function startMotorsForwards() {
   var obj = new webSocketActionObject(findActiveMotors(), "forwards", 0);
   var jsonString = JSON.stringify(obj);
   connection.send(jsonString);
-}
-
-function processAnswer(jsonObj) {
-  switch (jsonObj.action) {
-    case 'saveTimer':
-      break;
-    case 'reboot':
-      alert('Reboot initiated, time to reload!');
-      location.reload();
-      break;
-  }
-  // alert(jsonObj.)
 }
 
 function startMotorsForwardsSeconds() {
@@ -158,15 +151,10 @@ function statsOnConnect(jsonDataAttributes) {
   document.getElementById("rightLastFeedTime").value = dateLastFeedTimeRight.toLocaleString();
   document.getElementById("leftLastFeedDuration").value = jsonDataAttributes.leftlastfeedduration / 1000;
   document.getElementById("leftLastFeedTime").value = dateLastFeedTimeLeft.toLocaleString();
+  document.getElementById("wifiRssi").value = jsonDataAttributes.rssi;
 
   var dateNow = new Date();
   document.getElementById("lastUpdate").innerText = dateNow.toLocaleString();
-}
-
-function dateToUTCString(DateObject) {
-  var dateString = ('0' + DateObject.getUTCDate()).slice(-2) + "." + ('0' + (DateObject.getUTCMonth() + 1)).slice(-2) + "." + DateObject.getUTCFullYear();
-  dateString += " " + ('0' + DateObject.getUTCHours()).slice(-2) + ":" + ('0' + DateObject.getUTCMinutes()).slice(-2) + ":" + ('0' + DateObject.getUTCSeconds()).slice(-2);
-  return dateString;
 }
 
 function leadingZero(number) {
@@ -183,11 +171,6 @@ function rebootESP() {
 
 function flushPreferencesESP() {
   connection.send('{"action":"flush"}');
-}
-
-function activateLog() {
-  var textDiv = document.getElementById("logTextArea");
-  textDiv.style.display = "";
 }
 
 function leftMotor() {
@@ -282,3 +265,13 @@ function autoUpdate() {
   }
 }
 
+function toast(text) {
+  $.toast({
+    text: text,
+    showHideTransition: 'fade',
+    allowToastClose: false,
+    textAlign: 'center',
+    position: 'bottom-center',
+    hideAfter: 2000
+  })
+}
