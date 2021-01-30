@@ -14,6 +14,19 @@ It is necessary to do two separate flash processes to get all the data to your m
 ### Webserver data
 ![Upload flash](https://github.com/ultrara1n/dualcatfeeder-esp32/raw/master/assets/uploadflash.png "Upload flash")
 ## Wiring
+Wiring is quite simple, as the components used are pretty easy to hook up. Take a look at the Fritzing diagram and the notes afterwards
+![Fritzing wiring diagram](/assets/wiring.png)
+
+The DC motor driver is a L298N powered by a 12 V 3A power supply. The L298N is providing a 5 V output that we are using on the ESP32. Be sure to use a jumper (if not already in place) on the L298N to connect ENA and ENB with the 5V pin over them.
+
+On the ESP32 there are 4 GPIO pins used which are connected as following:
+
+GPIO13 -> IN1
+GPIO14 -> IN2
+GPIO15 -> IN3
+GPIO4  -> IN4
+
+Feel free to change this wiring but don't forget to adjust the lines in the code.
 
 ## WebSocket API
 The ESP32 is providing a WebSocket API which is called with JSON input to control and receive data from the device.
