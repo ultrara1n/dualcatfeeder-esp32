@@ -22,8 +22,11 @@ The DC motor driver is a L298N powered by a 12 V 3A power supply. The L298N is p
 On the ESP32 there are 4 GPIO pins used which are connected as following:
 
 GPIO13 -> IN1
+
 GPIO14 -> IN2
+
 GPIO15 -> IN3
+
 GPIO4  -> IN4
 
 Feel free to change this wiring but don't forget to adjust the lines in the code.
