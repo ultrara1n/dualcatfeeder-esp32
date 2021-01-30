@@ -1,9 +1,9 @@
 # dualcatfeeder-esp32
-This is the microcontroller implementation part of the DualCatFeeder project. The code is developed using VS Code with the PlatformIO extension so my urgent advice is to use this constellation if you are planning to build and use the software by yourself.
+This is the microcontroller implementation part of the DualCatFeeder project. The code is developed using VS Code with the PlatformIO extension, so my urgent advice is to use this constellation if you are planning to build and use the software by yourself.
 
 ![GIF of web app](/assets/web_app.webp)
 
-Here you will only find software and wiring related information, the more important stuff you can find in the [main repository](https://github.com/ultrara1n/DualCatFeeder) 
+Here you will only find software and wiring related information, the more important stuff (like 3D models) you can find in the [main repository](https://github.com/ultrara1n/DualCatFeeder) 
 ## Prepare your IDE
 Clone the repository to a place of your choice and open the project in VS Code. You will need the Platformio extension to do all further steps.
 I'm using Arduino OTA to flash updates of code and website to the ESP32, but for your initial flash you will have to connect the device via USB and do a "old fashioned" flash process.
